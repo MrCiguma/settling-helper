@@ -1,6 +1,10 @@
 <div class="layout">
   <!-- Left panel -->
   <div class="left">
+    <hr />
+    <h3>Share</h3>
+    <button (click)="copyShareableLink()">Copy Shareable Link</button>
+
     <button (click)="showInputs = !showInputs">
       {{ showInputs ? "Hide" : "Show" }} Initial Inputs
     </button>

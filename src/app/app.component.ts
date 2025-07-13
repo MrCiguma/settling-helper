@@ -108,4 +108,71 @@ export class AppComponent {
     this.actionLog.push(`➕ Added ${this.addCpAmount} CP`);
     this.addCpAmount = 0;
   }
+
+  encodeState(): string {
+    const state = this.getCurrentState();
+    const json = JSON.stringify(state);
+    const bytes = new TextEncoder().encode(json);
+    return btoa(String.fromCharCode(...bytes));
+  }
+
+  getCurrentState(): AppState {
+    return {
+      resPerHour: this.resPerHour,
+      cpPerDay: this.cpPerDay,
+      currentCp: this.currentCp,
+      currentRes: this.currentRes,
+      hoursSinceStart: this.hoursSinceStart,
+      lastPartyTime: this.lastPartyTime,
+      actionLog: this.actionLog,
+    };
+  }
+
+  decodeState(encoded: string): AppState {
+    const binary = atob(encoded);
+    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+    const json = new TextDecoder().decode(bytes);
+    return JSON.parse(json);
+  }
+
+  copyShareableLink(): void {
+    const encoded = this.encodeState();
+    const url = `${window.location.origin}${window.location.pathname}?state=${encoded}`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert('Link copied to clipboard!');
+    });
+  }
+
+  loadState(state: AppState): void {
+    this.resPerHour = state.resPerHour;
+    this.cpPerDay = state.cpPerDay;
+    this.currentCp = state.currentCp;
+    this.currentRes = state.currentRes;
+    this.hoursSinceStart = state.hoursSinceStart;
+    this.lastPartyTime = state.lastPartyTime;
+    this.actionLog = state.actionLog;
+  }
+
+  ngOnInit(): void {
+    const stateParam = new URLSearchParams(window.location.search).get('state');
+    if (stateParam) {
+      try {
+        const state = this.decodeState(stateParam);
+        this.loadState(state);
+        this.submitted = true;
+      } catch (e) {
+        console.warn('Invalid state in URL:', e);
+      }
+    }
+  }
+}
+
+interface AppState {
+  resPerHour: number;
+  cpPerDay: number;
+  currentCp: number;
+  currentRes: number;
+  hoursSinceStart: number;
+  lastPartyTime: number | null;
+  actionLog: string[];
 }
