@@ -1,0 +1,102 @@
+.layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.left {
+  flex: 1;
+}
+
+.right {
+  width: 300px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-left: 1px solid #ccc;
+  padding-left: 1rem;
+}
+
+.form label,
+.summary-box label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.summary-box {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: #f9f9f9;
+}
+
+.row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.row label {
+  flex: 1;
+}
+
+.right ul {
+  padding-left: 1rem;
+}
+
+.right li {
+  margin-bottom: 0.5rem;
+  font-family: monospace;
+}
+.party-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.cooldown-text {
+  color: #888;
+  font-size: 0.9rem;
+}
+.build-add-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.build-section,
+.manual-add-section {
+  flex: 1;
+  min-width: 250px;
+}
+.manual-add-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.manual-row {
+  display: flex;
+  align-items: flex-start; /* 🔧 aligns everything to top */
+  margin-bottom: 1rem;
+}
+
+.manual-row label {
+  padding-top: 6px; /* visually aligns with input text */
+  width: 50px;
+  font-weight: bold;
+}
+
+.manual-row input {
+  width: 200px;
+  padding: 4px 6px;
+  font-size: 0.9rem;
+  box-sizing: border-box;
+}
+
+.manual-row button {
+  white-space: nowrap;
+}
