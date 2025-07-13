@@ -12,11 +12,11 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  resPerHour = 2580;
+  resPerHour = 1200 + 1620;
   cpPerDay = 153;
   currentCp = 700;
-  currentRes = 20330;
-  hoursSinceStart = 28;
+  currentRes = 0;
+  hoursSinceStart = 24;
   submitted = true; // show the summary immediately
   showInputs = false;
 
@@ -77,6 +77,50 @@ export class AppComponent {
     this.actionLog.push(
       `⏩ Advanced ${hours}h: +${resGained} res, +${cpGained.toFixed(2)} CP`
     );
+
+    this.collapseLog();
+  }
+
+  collapseLog(): void {
+    const collapsed: string[] = [];
+    let pendingHours = 0;
+    let pendingRes = 0;
+    let pendingCp = 0;
+    const advanceRegex = /^⏩ Advanced (\d+)h: \+(\d+) res, \+([\d.]+) CP$/;
+
+    for (const log of this.actionLog) {
+      const match = log.match(advanceRegex);
+
+      if (match) {
+        const hours = parseInt(match[1], 10);
+        const res = parseInt(match[2], 10);
+        const cp = parseFloat(match[3]);
+
+        pendingHours += hours;
+        pendingRes += res;
+        pendingCp += cp;
+      } else {
+        if (pendingHours > 0) {
+          collapsed.push(
+            `⏩ Advanced ${pendingHours}h: +${pendingRes} res, +${pendingCp.toFixed(
+              2
+            )} CP`
+          );
+          pendingHours = pendingRes = pendingCp = 0;
+        }
+        collapsed.push(log);
+      }
+    }
+
+    if (pendingHours > 0) {
+      collapsed.push(
+        `⏩ Advanced ${pendingHours}h: +${pendingRes} res, +${pendingCp.toFixed(
+          2
+        )} CP`
+      );
+    }
+
+    this.actionLog = collapsed;
   }
 
   buildBuilding(): void {
