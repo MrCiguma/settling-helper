@@ -153,13 +153,6 @@ export class AppComponent {
     this.addCpAmount = 0;
   }
 
-  encodeState(): string {
-    const state = this.getCurrentState();
-    const json = JSON.stringify(state);
-    const bytes = new TextEncoder().encode(json);
-    return btoa(String.fromCharCode(...bytes));
-  }
-
   getCurrentState(): AppState {
     return {
       resPerHour: this.resPerHour,
@@ -172,11 +165,19 @@ export class AppComponent {
     };
   }
 
-  decodeState(encoded: string): AppState {
-    const binary = atob(encoded);
-    const bytes = Uint8Array.from(binary, (c) => c.charCodeAt(0));
-    const json = new TextDecoder().decode(bytes);
-    return JSON.parse(json);
+  encodeState(): string {
+    const state = this.getCurrentState();
+    return encodeURIComponent(JSON.stringify(state));
+  }
+
+  decodeState(encoded: string): any {
+    try {
+      const json = decodeURIComponent(encoded);
+      return JSON.parse(json);
+    } catch (error) {
+      console.error('❌ Failed to decode state:', error);
+      return null;
+    }
   }
 
   copyShareableLink(): void {
@@ -202,6 +203,7 @@ export class AppComponent {
     if (stateParam) {
       try {
         const state = this.decodeState(stateParam);
+        if (!state) return;
         this.loadState(state);
         this.submitted = true;
       } catch (e) {
