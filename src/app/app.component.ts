@@ -25,7 +25,10 @@ export class AppComponent {
 
   actionLog: string[] = [];
 
+  startingState!: AppState;
+
   calculate() {
+    this.startingState = JSON.parse(JSON.stringify(this.getCurrentState()));
     this.submitted = true;
   }
 
@@ -166,14 +169,22 @@ export class AppComponent {
   }
 
   encodeState(): string {
-    const state = this.getCurrentState();
-    return encodeURIComponent(JSON.stringify(state));
+    const payload = {
+      current: this.getCurrentState(),
+      starting: this.startingState,
+    };
+    return encodeURIComponent(JSON.stringify(payload));
   }
 
   decodeState(encoded: string): any {
     try {
-      const json = decodeURIComponent(encoded);
-      return JSON.parse(json);
+      const json = decodeURIComponent(encoded); // Decode URL-safe string
+      const payload = JSON.parse(json);
+
+      // Save starting state
+      this.startingState = payload.starting;
+
+      return payload.current;
     } catch (error) {
       console.error('❌ Failed to decode state:', error);
       return null;
